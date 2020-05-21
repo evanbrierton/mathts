@@ -20,6 +20,7 @@
     ],
     "rules": {
       "no-useless-constructor": "off",
+      "no-dupe-class-members": "off",
       "import/extensions": [
         "error",
         "ignorePackages",
