@@ -1,2 +1,4 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as ArrayProxy } from './ArrayProxy';
+export { default as Ring } from './Ring';
+
+export * from './general';
