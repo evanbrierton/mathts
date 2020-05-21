@@ -1,4 +1,4 @@
-export default class Point {
+class Point {
   public x: number;
 
   public y: number;
@@ -14,3 +14,5 @@ export default class Point {
     return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
   }
 }
+
+export default Point;
