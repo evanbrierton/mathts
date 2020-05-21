@@ -19,5 +19,20 @@
         "@typescript-eslint"
     ],
     "rules": {
+      "no-useless-constructor": "off",
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "ts": "never"
+        }
+     ]
+    },
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [".ts"]
+        }
+      }
     }
 }
