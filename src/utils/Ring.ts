@@ -1,11 +1,11 @@
-import { ArrayProxy } from '.';
+import { ArrayProxy, getMethods } from '.';
 
 class Ring extends ArrayProxy {
   constructor(...entries: number[]) {
     super(
       (target, key) => target[((+key % target.length) + target.length) % target.length],
       entries,
-      Object.getOwnPropertyNames(Array.prototype),
+      getMethods(Array),
     );
   }
 
