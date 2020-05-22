@@ -1,27 +1,25 @@
 import Point from './Point';
 import Line from './Line';
+import { overload } from '../utils';
 
 class LineSegment extends Line {
-  readonly a: Point;
-  readonly b: Point;
+  public a!: Point;
+  public b!: Point;
   readonly length: number;
 
   constructor(a: Point, b: Point)
   constructor(x1: number, y1: number, x2: number, y2: number);
-  constructor(a: Point | number, b: Point | number, c?: number, d?: number) {
-    super(a, b, c, d);
-    if (a instanceof Point && b instanceof Point) {
-      [this.a, this.b] = [a, b];
-    } else if (
-      typeof a === 'number'
-      && typeof b === 'number'
-      && typeof c === 'number'
-      && typeof d === 'number'
-    ) {
-      [this.a, this.b] = [new Point(a, b), new Point(c, d)];
-    } else {
-      throw TypeError(`No constructor fouund for (${typeof a}, ${typeof b}, ${typeof c}, ${typeof d})`);
-    }
+  constructor(...args: any[]) {
+    super(...args);
+    overload(args, {
+      '(Point, Point)': (a: Point, b: Point) => {
+        this.a = a;
+        this.b = b;
+      },
+      '(Number, Number, Number, Number)': (x1: number, y1: number, x2: number, y2: number) => {
+        this.constructor(new Point(x1, y1), new Point(x2, y2));
+      },
+    });
 
     this.length = this.a.distanceToPoint(this.b);
   }
