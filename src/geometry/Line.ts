@@ -13,6 +13,8 @@ class Line {
 
   constructor(x1: number, y1: number, x2: number, y2: number)
 
+  constructor(a: Point | number, b: Point | number, c: undefined | number, d: undefined | number)
+
   constructor(a: Point | number, b: Point | number, c?: number, d?: number) {
     this.slope = 0;
     this.xinter = null;
@@ -24,7 +26,7 @@ class Line {
       && d === undefined
     ) {
       const slope = (b.y - a.y) / (b.x - a.x);
-      this.slope = 0;
+      this.slope = slope;
       if (Math.abs(slope) === Infinity) {
         this.slope = Infinity;
         this.xinter = a.x;
