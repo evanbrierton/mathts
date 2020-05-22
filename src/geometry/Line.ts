@@ -2,19 +2,16 @@ import Point from './Point';
 
 class Line {
   readonly slope: number;
-
   readonly xinter: number | null;
-
   readonly yinter: number | null;
+  readonly perpendicularSlope: number;
+  readonly isVertical: boolean;
+  readonly isHorizontal: boolean;
 
   constructor(a: Point, b: Point)
-
   constructor(slope: number, intercept: number)
-
   constructor(x1: number, y1: number, x2: number, y2: number)
-
   constructor(a: Point | number, b: Point | number, c: undefined | number, d: undefined | number)
-
   constructor(a: Point | number, b: Point | number, c?: number, d?: number) {
     this.slope = 0;
     this.xinter = null;
@@ -58,18 +55,10 @@ class Line {
     } else {
       throw TypeError(`No constructor found for (${typeof a}, ${typeof b}, ${typeof c}, ${typeof d})`);
     }
-  }
 
-  get perpendicularSlope() {
-    return -1 / this.slope;
-  }
-
-  get isHorizonal() {
-    return this.slope === 0 && this.xinter === null && this.yinter !== null;
-  }
-
-  get isVertical() {
-    return this.slope === Infinity && this.xinter !== null && this.yinter === null;
+    this.perpendicularSlope = -1 / this.slope;
+    this.isHorizontal = this.slope === 0;
+    this.isVertical = this.slope === Infinity;
   }
 }
 

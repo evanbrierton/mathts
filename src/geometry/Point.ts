@@ -1,11 +1,16 @@
 class Point {
-  public x: number;
-
-  public y: number;
+  readonly x: number;
+  readonly y: number;
+  readonly magSq: number;
+  readonly mag: number;
+  readonly heading: number;
 
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
+    this.magSq = this.x ** 2 + this.y ** 2;
+    this.mag = Math.sqrt(this.magSq);
+    this.heading = Math.atan2(this.y, this.x);
   }
 
   distanceToPoint(other: Point) {
@@ -18,40 +23,24 @@ class Point {
     return new Point(this.x + other.x, this.y + other.y);
   }
 
-  sub(other: Point) {
+  subtract(other: Point) {
     return new Point(this.x - other.x, this.y - other.y);
   }
 
-  mult(scalar: number) {
-    return new Point(this.x * scalar, this.y * scalar);
+  scale(scaleFactor: number) {
+    return new Point(this.x * scaleFactor, this.y * scaleFactor);
   }
 
-  div(scalar: number) {
-    return new Point(this.x / scalar, this.y / scalar);
-  }
-
-  dot(other: Point) {
+  dotProduct(other: Point) {
     return this.x * other.x + this.y * other.y;
+  }
+
+  getNormalized() {
+    return Point.fromAngle(this.heading);
   }
 
   static fromAngle(theta: number) {
     return new Point(Math.cos(theta), Math.sin(theta));
-  }
-
-  get magSq() {
-    return this.x ** 2 + this.y ** 2;
-  }
-
-  get mag() {
-    return Math.sqrt(this.magSq);
-  }
-
-  get heading() {
-    return Math.atan2(this.y, this.x);
-  }
-
-  get normalized() {
-    return Point.fromAngle(this.heading);
   }
 }
 
