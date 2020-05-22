@@ -9,7 +9,7 @@ class Ring extends ArrayProxy {
     );
   }
 
-  shift(n = 1) {
+  shift(n = 1): Ring {
     return this.map((_entry, i, ring) => ring[i - n]);
   }
 }
