@@ -1,11 +1,11 @@
-class Matrix extends Array {
-  public rows: number;
+class Matrix extends Array<Array<Number>> {
+  readonly rows: number;
 
-  public columns: number;
+  readonly columns: number;
 
-  public square: boolean;
+  readonly square: boolean;
 
-  constructor(rows) {
+  constructor(rows: number[][]) {
     rows.forEach((row) => {
       if (row.length !== rows[0].length) throw Error('All rows must be of the same length.');
     });
