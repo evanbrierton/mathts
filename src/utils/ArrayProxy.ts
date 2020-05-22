@@ -1,11 +1,16 @@
+// eslint-disable-next-line no-unused-vars
+import { NestedArray } from '.';
+
 interface target {
   [index: string]: any;
-  [index: number]: number;
+  [index: number]: number | NestedArray<number>;
 }
 
 class ArrayProxy extends Array {
   constructor(
-    accessor: (target: target, key: string) => number, entries: number[], methods: string[],
+    accessor: (target: target, key: string) => number | NestedArray<number>,
+    entries: any[],
+    methods: string[],
   ) {
     if (entries.length === 1) {
       super(1);
