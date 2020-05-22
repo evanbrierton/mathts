@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as Point } from './Point';
+export { default as Line } from './Line';
