@@ -39,7 +39,7 @@ class Cycle extends ArrayProxy<number> {
     const elements = Array.from(new Set([...this, ...cycle])).sort((a, b) => a - b);
     const cycles = new Ring<number[]>();
 
-    while (elements[0]) {
+    while (elements.length) {
       cycles.push([]);
       let next = elements[0];
       do {

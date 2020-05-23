@@ -14,7 +14,7 @@ class ArrayProxy<T> extends Array<T> {
       {
         get: (target: any, key: string) => {
           if (typeof key === 'string' && /^-?\d+$/.test(key)) return accessor(target, key);
-          if (typeof target[key] === 'function' && !getMethods(Array).includes(key)) {
+          if (key.constructor.name === 'Symbol') {
             return (...args: any[]) => target[key](...args);
           }
           return target[key];
