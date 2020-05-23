@@ -1,8 +1,11 @@
+// eslint-disable-next-line no-unused-vars
 import { ArrayProxy, overload } from '../utils';
+import { Cycle } from '.';
 
-class Permutation extends ArrayProxy {
+class Permutation extends ArrayProxy<number> {
   public input!: number[];
   public output!: number[];
+  readonly cycles: Array<Cycle>;
 
   constructor(input: number[], output: number[]);
   constructor(output: number[]);
@@ -23,6 +26,8 @@ class Permutation extends ArrayProxy {
         this.output = output;
       },
     });
+
+    this.cycles = Cycle.toDisjointCycles(this);
   }
 }
 

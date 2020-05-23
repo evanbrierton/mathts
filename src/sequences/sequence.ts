@@ -1,6 +1,6 @@
 import { ArrayProxy } from '../utils';
 
-class Sequence extends ArrayProxy {
+class Sequence extends ArrayProxy<number> {
   constructor(fn: (n: number, sequence: number[]) => number, init: number[] = []) {
     super(
       (_target, n) => {

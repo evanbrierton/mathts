@@ -1,11 +1,6 @@
-interface target {
-  [index: string]: any;
-  [index: number]: number;
-}
-
-class ArrayProxy extends Array {
+class ArrayProxy<T> extends Array<T> {
   constructor(
-    accessor: (target: target, key: string) => number, entries: number[],
+    accessor: (target: any, key: string) => T, entries: T[],
   ) {
     if (entries.length === 1) {
       super(1);
@@ -15,7 +10,7 @@ class ArrayProxy extends Array {
     return new Proxy(
       this,
       {
-        get: (target: target, key: string) => {
+        get: (target: any, key: string) => {
           if (/^-?\d+$/.test(key)) return accessor(target, key);
           return target[key];
         },

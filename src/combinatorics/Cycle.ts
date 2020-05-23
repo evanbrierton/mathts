@@ -2,7 +2,7 @@
 import { Permutation } from '.';
 import { ArrayProxy, Ring } from '../utils';
 
-class Cycle extends ArrayProxy {
+class Cycle extends ArrayProxy<number> {
   constructor(...entries: number[]) {
     if (Array.from(new Set(entries)).length !== entries.length) {
       throw Error('Cycles cannot contain duplicate elements');
@@ -20,10 +20,10 @@ class Cycle extends ArrayProxy {
 
   static toDisjointCycles(permutation: Permutation) {
     const elements = [...permutation.input].sort((a, b) => a - b);
-    const cycles = new Ring();
+    const cycles = new Ring<Cycle>();
 
     while (elements[0]) {
-      cycles.push(new Cycle());
+      cycles.push([]);
       let next = elements[0];
       do {
         cycles[-1].push(next);
@@ -32,7 +32,7 @@ class Cycle extends ArrayProxy {
       } while (next !== cycles[-1][0]);
     }
 
-    return cycles;
+    return cycles.map((cycle) => new Cycle(...cycle));
   }
 }
 

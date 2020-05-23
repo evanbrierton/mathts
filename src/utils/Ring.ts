@@ -1,7 +1,7 @@
 import { ArrayProxy } from '.';
 
-class Ring extends ArrayProxy {
-  constructor(...entries: number[]) {
+class Ring<T> extends ArrayProxy<T> {
+  constructor(...entries: T[]) {
     super(
       (target, key) => target[((+key % target.length) + target.length) % target.length],
       entries,
