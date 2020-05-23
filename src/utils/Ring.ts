@@ -11,6 +11,10 @@ class Ring<T> extends ArrayProxy<T> {
   shiftRight(n = 1) {
     return this.map((_entry, i) => this[i - n]);
   }
+
+  test(n: number) {
+    return this[n];
+  }
 }
 
 export default Ring;

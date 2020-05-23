@@ -1,3 +1,5 @@
+import { getMethods } from '.';
+
 class ArrayProxy<T> extends Array<T> {
   constructor(
     accessor: (target: any, key: string) => T, entries: T[],
@@ -11,7 +13,10 @@ class ArrayProxy<T> extends Array<T> {
       this,
       {
         get: (target: any, key: string) => {
-          if (/^-?\d+$/.test(key)) return accessor(target, key);
+          if (typeof key === 'string' && /^-?\d+$/.test(key)) return accessor(target, key);
+          if (typeof target[key] === 'function' && !getMethods(Array).includes(key)) {
+            return (...args: any[]) => target[key](...args);
+          }
           return target[key];
         },
       },

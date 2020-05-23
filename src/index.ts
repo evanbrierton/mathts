@@ -1,6 +1,9 @@
-// import { Cycle, Permutation } from './combinatorics';
+// import { Cycle } from './combinatorics';
+// import { Ring } from './utils';
 
 export * from './utils';
 export * from './geometry';
 
-// console.log(Cycle.toDisjointCycles(new Permutation([3, 2, 1])));
+// const C = new Cycle(2, 1, 5, 4, 6, 3);
+
+// console.log(new Ring(6, 3).test(6));
