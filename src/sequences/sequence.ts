@@ -1,4 +1,4 @@
-import { ArrayProxy, getMethods } from '../utils';
+import { ArrayProxy } from '../utils';
 
 class Sequence extends ArrayProxy {
   constructor(fn: (n: number, sequence: number[]) => number, init: number[] = []) {
@@ -9,12 +9,11 @@ class Sequence extends ArrayProxy {
         return fn.call(this, +n, this);
       },
       [],
-      [...getMethods(Sequence), 'fn'],
     );
   }
 
   subSequence(start: number, end: number): number[] {
-    return Array.from({ length: end - start }, (_item, i) => this[start + i]);
+    return Array.from({ length: end - start }).fill(null).map((_item, i) => this[start + i]);
   }
 
   sum(n: number): number {
