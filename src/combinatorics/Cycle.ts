@@ -18,8 +18,8 @@ class Cycle extends ArrayProxy<number> {
     );
   }
 
-  static toDisjointCycles(permutation: Permutation) {
-    const elements = [...permutation.input].sort((a, b) => a - b);
+  private static generateDisjointCycles(input: number[], getNext: (next: number) => number) {
+    const elements = [...new Set(input.sort((a, b) => a - b))];
     const cycles = new Ring<number[]>();
 
     while (elements[0]) {
@@ -28,32 +28,19 @@ class Cycle extends ArrayProxy<number> {
       do {
         cycles[-1].push(next);
         elements.splice(elements.indexOf(next), 1);
-        next = permutation[next];
+        next = getNext(next);
       } while (next !== cycles[-1][0]);
     }
 
     return cycles.map((cycle) => new Cycle(...cycle));
   }
 
-  compose(cycle: Cycle) {
-    const elements = Array.from(new Set([...this, ...cycle])).sort((a, b) => a - b);
-    const cycles = new Ring<number[]>();
-
-    while (elements.length) {
-      cycles.push([]);
-      let next = elements[0];
-      do {
-        cycles[-1].push(next);
-        elements.splice(elements.indexOf(next), 1);
-        next = this[cycle[next]];
-      } while (next !== cycles[-1][0]);
-    }
-
-    return cycles.map((i) => new Cycle(...Array.from(i)));
+  static toDisjointCycles(permutation: Permutation) {
+    return Cycle.generateDisjointCycles(permutation.input, (next) => permutation[next]);
   }
 
-  test(n: number) {
-    return this[n];
+  compose(cycle: Cycle) {
+    return Cycle.generateDisjointCycles([...this, ...cycle], (next) => this[cycle[next]]);
   }
 }
 
