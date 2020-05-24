@@ -1,16 +1,23 @@
-import { ArrayProxy, getMethods } from '.';
+import { ArrayProxy } from '.';
 
-class Ring extends ArrayProxy {
-  constructor(...entries: number[]) {
+class Ring<T> extends ArrayProxy<T> {
+  constructor(...entries: T[]) {
     super(
       (target, key) => target[((+key % target.length) + target.length) % target.length],
       entries,
-      getMethods(Array),
     );
   }
 
-  shift(n = 1): Ring {
-    return this.map((_entry, i, ring) => ring[i - n]);
+  shiftLeft(n = 1) {
+    return new Ring(...this.map((_entry, i) => this[i + n]));
+  }
+
+  shiftRight(n = 1) {
+    return new Ring(...this.map((_entry, i) => this[i - n]));
+  }
+
+  test(n: number) {
+    return this[n];
   }
 }
 
