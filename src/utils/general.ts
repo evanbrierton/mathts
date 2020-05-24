@@ -6,8 +6,8 @@ export const getMethods = (Class: Constructor) => (
   Object.getOwnPropertyNames(Class.prototype).filter((method) => method !== 'constructor')
 );
 
-export const arrEquals = (a: NestedArray<number>, b: NestedArray<number>): boolean => (
-  JSON.stringify(a) === JSON.stringify(b)
+export const arrEquals = (...arrays: NestedArray<any>[]): boolean => (
+  arrays.every((arr) => JSON.stringify(arr) === JSON.stringify(arr[0]))
 );
 
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
@@ -26,3 +26,9 @@ export const lcm = (...args: number[]) => (
     ? args[0]
     : [...new Set(args)].reduce((acc, next) => acc * next) / gcd(...new Set(args))
 );
+
+export const boundSort = (arr: any[], template: any[], compareFn: (a: any, b: any) => number) => {
+  const copy = [...arr];
+  copy.sort((a, b) => compareFn(template[arr.indexOf(a)], template[arr.indexOf(b)]));
+  return copy;
+};
