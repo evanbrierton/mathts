@@ -8,6 +8,10 @@ class Ring<T> extends ArrayProxy<T> {
     );
   }
 
+  shiftLeft(n = 1) {
+    return this.map((_entry, i) => this[i + n]);
+  }
+
   shiftRight(n = 1) {
     return this.map((_entry, i) => this[i - n]);
   }

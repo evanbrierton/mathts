@@ -22,7 +22,7 @@ class Cycle extends ArrayProxy<number> {
     const elements = [...new Set(input.sort((a, b) => a - b))];
     const cycles = new Ring<number[]>();
 
-    while (elements[0]) {
+    while (elements.length) {
       cycles.push([]);
       let next = elements[0];
       do {
@@ -32,7 +32,7 @@ class Cycle extends ArrayProxy<number> {
       } while (next !== cycles[-1][0]);
     }
 
-    return cycles.map((cycle) => new Cycle(...cycle));
+    return new Ring(...cycles.map((cycle) => new Cycle(...cycle)));
   }
 
   static toDisjointCycles(permutation: Permutation) {
