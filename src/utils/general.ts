@@ -7,7 +7,7 @@ export const getMethods = (Class: Constructor) => (
 );
 
 export const arrEquals = (...arrays: NestedArray<any>[]): boolean => (
-  arrays.every((arr) => JSON.stringify(arr) === JSON.stringify(arr[0]))
+  arrays.every((arr) => JSON.stringify(arr) === JSON.stringify(arrays[0]))
 );
 
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
