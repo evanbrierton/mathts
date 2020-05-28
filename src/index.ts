@@ -1,11 +1,11 @@
-import { Permutation, Cycle } from './combinatorics';
-
-// import * as utils from './utils';
-
-export * from './utils';
-export * from './geometry';
 export * from './combinatorics';
+export * from './geometry';
+export * from './sequences';
+export * from './utils';
 
-const P = new Permutation(new Cycle(1, 2, 3));
+const sum = (a: number, b: number) => a + b;
 
-console.log(P);
+const a = sum(1, 2);
+
+// eslint-disable-next-line no-unused-expressions
+console.log(a);
