@@ -13,8 +13,17 @@ export const arrEquals = (...arrays: NestedArray<any>[]): boolean => (
   arrays.every((arr) => JSON.stringify(arr) === JSON.stringify(arrays[0]))
 );
 
+const getType = (value: any): string => (
+  value.constructor.name + (
+    Array.isArray(value)
+    && value.every((entry: any) => entry.constructor.name === value[0].constructor.name)
+      ? `<${getType(value[0])}>`
+      : ''
+  )
+);
+
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
-  const key = `(${args.map((arg) => arg.constructor.name).join(', ')})`;
+  const key = `(${args.map((arg) => getType(arg)).join(', ')})`;
   if (Object.keys(constructors).includes(key)) constructors[key](...args);
   else throw TypeError(`The caller has no constructor overload for arguments ${key}`);
 };

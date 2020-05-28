@@ -1,8 +1,16 @@
 class FunctionProxy extends Function {
-  constructor(fn: (...args: any[]) => any) {
-    super();
+  [key: string]: any;
 
-    return new Proxy(this, { apply: fn });
+  constructor(handler: ProxyHandler<FunctionProxy>) {
+    super();
+    return new Proxy(this, {
+      get: (target, key) => {
+        if (key === 'name') return this.constructor.name;
+        if (typeof key === 'string' && ['arguments', 'caller'].includes(key)) return undefined;
+        return handler.get ? handler.get(target, key, this) : Reflect.get(target, key);
+      },
+      ...handler,
+    });
   }
 }
 

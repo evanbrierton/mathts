@@ -2,26 +2,19 @@
 import util, { InspectOptionsStylized } from 'util';
 
 import { Permutation } from '.';
-import { Ring, arrEquals, styliseArray } from '../utils';
+import {
+  Ring, FunctionProxy, arrEquals, styliseArray,
+} from '../utils';
 
-class Cycle extends Function {
+class Cycle extends FunctionProxy {
   readonly order: number;
   [key: string]: any;
 
   constructor(...entries: number[]) {
-    super();
-
-    if ([...new Set(entries)].length !== entries.length) {
-      throw Error('Cycles cannot contain duplicate elements');
-    }
-
-    this.order = entries.length;
-    this.entries = entries;
-
-    return new Proxy(this, {
+    super({
       get: (target, key: string) => {
         if (typeof key === 'symbol') return Reflect.get(target, key);
-        if (Number.isInteger(+key)) return entries[+key];
+        if (Number.isInteger(+key)) return new Ring(...entries)[+key];
         if (key === 'length') return this.order;
         return target[key];
       },
@@ -32,6 +25,12 @@ class Cycle extends Function {
           : +args[0]
       ),
     });
+
+    if ([...new Set(entries)].length !== entries.length) {
+      throw Error('Cycles cannot contain duplicate elements');
+    }
+
+    this.order = entries.length;
   }
 
   [Symbol.iterator]() {
@@ -50,7 +49,11 @@ class Cycle extends Function {
   }
 
   [util.inspect.custom](_depth: number, options: InspectOptionsStylized) {
-    return `${this.constructor.name}(${this.length}) ${styliseArray(this.entries, 'number', options)}`;
+    return `${this.constructor.name}(${this.length}) ${styliseArray([...this], 'number', options)}`;
+  }
+
+  get length() {
+    return this.order;
   }
 
   private static generateDisjointCycles(input: number[], getNext: (next: number) => number) {
@@ -73,7 +76,7 @@ class Cycle extends Function {
   static composeCycles(cycles: (Ring<Cycle> | Array<Cycle>)) {
     return Cycle.generateDisjointCycles(
       cycles.map((cycle) => [...cycle]).flat(1),
-      ((next) => cycles.reduceRight((acc, cycle) => cycle[acc], next)),
+      ((next) => cycles.reduceRight((acc, cycle) => cycle(acc), next)),
     );
   }
 
@@ -82,7 +85,9 @@ class Cycle extends Function {
   }
 
   compose(cycle: Cycle) {
-    return Cycle.generateDisjointCycles([...this, ...cycle], (next) => this[cycle[next]]);
+    return new Permutation(
+      Cycle.generateDisjointCycles([...this, ...cycle], (next) => this(cycle(next))),
+    );
   }
 
   equals(cycle: Cycle) {
