@@ -19,6 +19,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+      "no-console": "off",
       "no-useless-constructor": "off",
       "no-dupe-class-members": "off",
       "import/extensions": [
