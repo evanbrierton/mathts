@@ -1,9 +1,12 @@
+// eslint-disable-next-line no-unused-vars
+import util, { InspectOptions } from 'util';
+
 import {
   ArrayProxy, Ring, overload, lcm, arrEquals, boundSort,
 } from '../utils';
 import { Cycle } from '.';
 
-class Permutation extends ArrayProxy<number> {
+class Permutation extends Function {
   public input: number[] = [];
   public output: number[] = [];
   readonly cycles: Ring<Cycle>;
@@ -17,17 +20,15 @@ class Permutation extends ArrayProxy<number> {
   constructor(input: number[], output: number[]);
   constructor(output: number[]);
   constructor(cycles: Ring<Cycle>);
+  constructor(cycles: Cycle);
 
-  constructor(...args: (number[] | Ring<Cycle>)[]) {
-    super(
-      (_target, key) => (this.input.includes(+key) ? this.output[this.input.indexOf(+key)] : +key),
-      [],
-    );
+  constructor(...args: (number[] | Ring<Cycle> | Cycle)[]) {
+    super();
 
     overload(args, {
       '(Array, Array)': (input: number[], output: number[]) => {
         if (!arrEquals([...input].sort((a, b) => a - b), [...output].sort((a, b) => a - b))) {
-          throw Error('Permutations must map a set to itself.');
+          throw Error('Permutations must map a set to itself');
         }
         if (!arrEquals(input, [...new Set(input)])) {
           throw Error('Sets cannot contain duplicate elements');
@@ -85,10 +86,24 @@ class Permutation extends ArrayProxy<number> {
     this.order = lcm(...this.cycles.map(({ length }) => length));
     this.inversions = this.transpositions.length;
     this.sign = (-1) ** this.inversions;
+
+    return new Proxy(this, {
+      apply: (_target, _thisArg, [input]) => (
+        this.input.includes(input) ? this.output[this.input.indexOf(input)] : input
+      ),
+    });
+  }
+
+  [util.inspect.custom](_depth: number, options: InspectOptions) {
+    let intermediate: string = '';
+    if (options.maxStringLength !== Number.MAX_SAFE_INTEGER) {
+      intermediate = util.inspect(this, { maxStringLength: Number.MAX_SAFE_INTEGER, colors: true }).replace('[Function: anonymous] ', '');
+    }
+    return intermediate || this;
   }
 
   compose(permutation: Permutation) {
-    return new Permutation(this.input, this.output.map((entry) => permutation[entry]));
+    return new Permutation(this.input, this.output.map((entry) => permutation(entry)));
   }
 
   pow(n: number) {
@@ -109,5 +124,7 @@ class Permutation extends ArrayProxy<number> {
     return arrEquals(this.input, permutation.input) && arrEquals(this.output, permutation.output);
   }
 }
+
+// console.log(util.inspect);
 
 export default Permutation;

@@ -1,24 +1,56 @@
-import { Permutation } from '.';
-import { ArrayProxy, Ring, arrEquals } from '../utils';
+// eslint-disable-next-line no-unused-vars
+import util, { InspectOptionsStylized } from 'util';
 
-class Cycle extends ArrayProxy<number> {
+import { Permutation } from '.';
+import { Ring, arrEquals, styliseArray } from '../utils';
+
+class Cycle extends Function {
+  readonly order: number;
+  [key: string]: any;
+
   constructor(...entries: number[]) {
+    super();
+
     if ([...new Set(entries)].length !== entries.length) {
       throw Error('Cycles cannot contain duplicate elements');
     }
-    // eslint-disable-next-line no-underscore-dangle
-    let _entries = new Ring<number>(...entries);
 
-    while (_entries[0] !== Math.min(...entries)) _entries = _entries.shiftRight();
+    this.order = entries.length;
+    this.entries = entries;
 
-    super(
-      (_target, key) => (
-        entries.includes(+key)
-          ? new Ring(...entries)[entries.indexOf(+key) + 1]
-          : +key
+    return new Proxy(this, {
+      get: (target, key: string) => {
+        if (typeof key === 'symbol') return Reflect.get(target, key);
+        if (Number.isInteger(+key)) return entries[+key];
+        if (key === 'length') return this.order;
+        return target[key];
+      },
+
+      apply: (_target, _thisArg, args) => (
+        entries.includes(+args[0])
+          ? new Ring(...entries)[entries.indexOf(+args[0]) + 1]
+          : +args[0]
       ),
-      _entries,
-    );
+    });
+  }
+
+  [Symbol.iterator]() {
+    const cycle = this;
+    let i = 0;
+    let value = this[0];
+    return {
+      next() {
+        if (i >= cycle.order) return { done: true };
+        value = cycle(value);
+        i += 1;
+        return { value, done: false };
+      },
+      [Symbol.iterator]() { return this; },
+    };
+  }
+
+  [util.inspect.custom](_depth: number, options: InspectOptionsStylized) {
+    return `${this.constructor.name}(${this.length}) ${styliseArray(this.entries, 'number', options)}`;
   }
 
   private static generateDisjointCycles(input: number[], getNext: (next: number) => number) {
@@ -46,7 +78,7 @@ class Cycle extends ArrayProxy<number> {
   }
 
   static toDisjointCycles(permutation: Permutation) {
-    return Cycle.generateDisjointCycles(permutation.input, (next) => permutation[next]);
+    return Cycle.generateDisjointCycles(permutation.input, (next) => permutation(next));
   }
 
   compose(cycle: Cycle) {

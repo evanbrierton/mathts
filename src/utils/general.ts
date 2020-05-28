@@ -1,13 +1,16 @@
-// eslint-disable-next-line import/prefer-default-export
+// eslint-disable-next-line no-unused-vars
+import { InspectOptionsStylized, Style } from 'util';
+
+
 interface NestedArray<T> extends Array<T | NestedArray<T>> { }
-type Constructor<T extends {} = {}> = new (...args: any[]) => T;
+export type Constructor<T extends {} = {}> = new (...args: any[]) => T;
 
 export const getMethods = (Class: Constructor) => (
   Object.getOwnPropertyNames(Class.prototype).filter((method) => method !== 'constructor')
 );
 
 export const arrEquals = (...arrays: NestedArray<any>[]): boolean => (
-  arrays.every((arr) => JSON.stringify(arr) === JSON.stringify(arr[0]))
+  arrays.every((arr) => JSON.stringify(arr) === JSON.stringify(arrays[0]))
 );
 
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
@@ -32,3 +35,7 @@ export const boundSort = (arr: any[], template: any[], compareFn: (a: any, b: an
   copy.sort((a, b) => compareFn(template[arr.indexOf(a)], template[arr.indexOf(b)]));
   return copy;
 };
+
+export const styliseArray = (arr: any[], type: Style, { stylize }: InspectOptionsStylized) => (
+  `[ ${`${arr.map((entry) => stylize(entry, type))}`.replace(/,/g, ', ')} ]`
+);
