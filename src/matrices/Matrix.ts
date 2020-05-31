@@ -1,3 +1,4 @@
+import { Group } from '../combinatorics';
 import { overload } from '../utils';
 
 class Matrix {
@@ -5,14 +6,14 @@ class Matrix {
   public rows!: number;
   public columns!: number;
   public square!: boolean;
-  // public det: number;
+  public det: number;
   [index: number]: number[];
 
   constructor(rows: number[][]);
   constructor(rows: number, columns: number, callback: (i: number, j: number) => number)
 
   constructor(...args: [number[][]] | [number, number, (i: number, j: number) => number]) {
-    return overload(args, {
+    const matrix = overload(args, {
       '(Array<Array<Number>>)': (rows: number[][]) => {
         rows.forEach((row) => {
           if (row.length !== rows[0].length) throw Error('All rows must be of the same length.');
@@ -35,6 +36,18 @@ class Matrix {
         Matrix.generate(rows, columns, generator)
       ),
     });
+
+    this.det = [...Group.symmetricGroup(this.rows)]
+      .reduce(
+        (sum, permutation) => (
+          sum + permutation.sign * this.entries.reduce(
+            (product, row, i) => product * row[permutation(i + 1) - 1], 1,
+          )
+        ),
+        0,
+      );
+
+    return matrix;
   }
 
   static generate(

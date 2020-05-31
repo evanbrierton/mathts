@@ -1,4 +1,4 @@
-import { Group } from './combinatorics';
+import { Matrix } from './matrices';
 
 export * from './combinatorics';
 export * from './geometry';
@@ -9,4 +9,4 @@ export * from './utils';
 
 // const A = new Matrix(3, 3, (i, j) => i * j);
 
-console.log(Group.dihedralGroup(3));
+console.log(new Matrix([[4, 6], [3, 8]]));

@@ -2,7 +2,7 @@
 import { Permutation } from '.';
 import { Ring } from '../utils';
 
-class Group extends Set {
+class Group extends Set<Permutation> {
   constructor(permutations: ArrayLike<Permutation>) {
     super(Array.from(permutations));
   }
