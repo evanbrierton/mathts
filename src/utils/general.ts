@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { InspectOptionsStylized, Style } from 'util';
 
-
 interface NestedArray<T> extends Array<T | NestedArray<T>> { }
 export type Constructor<T extends {} = {}> = new (...args: any[]) => T;
 
@@ -54,4 +53,12 @@ export const styliseArray = (arr: any[], type: Style, { stylize }: InspectOption
 
 export const roundToFixed = (value: number, places: number) => (
   Math.round((value + Number.EPSILON) * 10 ** places) / (10 ** places)
+);
+
+export const sum = (k: number, n: number, fn: (term: number) => number) => (
+  Array.from({ length: n + 1 - k }, (_term, i) => fn(i + k)).reduce((acc, next) => acc + next, 0)
+);
+
+export const product = (k: number, n: number, fn: (term: number) => number) => (
+  Array.from({ length: n + 1 - k }, (_term, i) => fn(i + k)).reduce((acc, next) => acc * next, 0)
 );
