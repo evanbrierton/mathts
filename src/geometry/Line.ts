@@ -1,50 +1,75 @@
-import Point from './Point';
+// eslint-disable-next-line no-unused-vars
+import Point2D from './Point2D';
 import { overload } from '../utils';
 
+/**
+ * A class to represent a 2D line
+ *
+ * @class Line
+ */
 class Line {
-  public slope!: number;
-  public xinter: number | null = null;
-  public yinter: number | null = null;
-  readonly perpendicularSlope: number;
-  readonly isVertical: boolean;
-  readonly isHorizontal: boolean;
+  // TODO: Use Fraction class and gcd() to make sure these are always integers
+  readonly a!: number;
+  readonly b!: number;
+  readonly c!: number;
 
-  constructor(a: Point, b: Point)
-  constructor(slope: number, intercept: number)
-  constructor(x1: number, y1: number, x2: number, y2: number)
-  constructor(...args: any[])
-  constructor(...args: any[]) {
-    overload(args, {
-      '(Point, Point)': (a: Point, b: Point) => {
-        const slope = (b.y - a.y) / (b.x - a.x);
-        this.slope = slope;
-        if (Math.abs(this.slope) === Infinity) {
-          this.slope = Infinity;
-          this.xinter = a.x;
-        } else if (slope === 0) {
-          this.yinter = a.y;
-        } else {
-          this.yinter = a.y - slope * a.x;
-          this.xinter = -this.yinter * this.slope;
-        }
-      },
-      '(Number, Number, Number, Number)': (x1: number, y1: number, x2: number, y2: number) => {
-        this.constructor(new Point(x1, y1), new Point(x2, y2));
-      },
+  readonly slope!: number;
+  readonly xIntercept!: number;
+  readonly yIntercept!: number;
+
+  constructor(a: Point2D, b: Point2D);
+  constructor(a: number, b: number, c: number)
+  constructor(m: number, yIntercept: number)
+  constructor(...args: Point2D[] | number[])
+  constructor(...args: Point2D[] | number[]) {
+    const properties = overload(args, {
       '(Number, Number)': (slope: number, intercept: number) => {
-        this.slope = slope;
-        if (Math.abs(this.slope) === Infinity) {
-          this.slope = Infinity;
-          this.xinter = intercept;
-        } else {
-          this.yinter = intercept;
+        if (Math.abs(slope) === Infinity) {
+          throw Error('Cannot use constructor (slope, yIntercept) for vertical lines');
         }
+
+        if (slope === 0) {
+          return {
+            a: 0, b: 1, c: -intercept, yIntercept: intercept, slope, xIntercept: undefined,
+          };
+        }
+
+        return {
+          a: slope,
+          b: -1,
+          c: intercept,
+          yIntercept: intercept,
+          slope,
+          xIntercept: -intercept / slope,
+        };
       },
+      '(Point2D, Point2D)': (p1: Point2D, p2: Point2D) => {
+        const a = p2.y - p1.y;
+        const b = p1.x - p2.x;
+        const c = p1.y * (-b) - p1.x * a;
+        const yIntercept = -c / b;
+        const slope = (p2.y - p1.y) / (p2.x - p1.x);
+        const xIntercept = -c / a;
+        return {
+          a,
+          b,
+          c,
+          yIntercept: Math.abs(yIntercept) === Infinity ? undefined : yIntercept,
+          slope,
+          xIntercept: Math.abs(xIntercept) === Infinity ? undefined : xIntercept,
+        };
+      },
+      '(Number, Number, Number)': (a: number, b: number, c: number) => ({
+        a,
+        b,
+        c,
+        yIntercept: Math.abs(-c / b) === Infinity ? undefined : -c / b,
+        slope: -a / b,
+        xIntercept: Math.abs(-c / a) === Infinity ? undefined : -c / a,
+      }),
     });
 
-    this.perpendicularSlope = -1 / this.slope;
-    this.isVertical = this.slope === Infinity;
-    this.isHorizontal = this.slope === 0;
+    Object.assign(this, properties);
   }
 }
 

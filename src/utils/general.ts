@@ -24,8 +24,11 @@ const getType = (value: any): string => (
 
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
   const key = `(${args.map((arg) => getType(arg)).join(', ')})`;
-  if (Object.keys(constructors).includes(key)) constructors[key](...args);
-  else throw TypeError(`The caller has no constructor overload for arguments ${key}`);
+  if (Object.keys(constructors).includes(key)) {
+    return constructors[key](...args);
+  }
+
+  throw TypeError(`The caller has no constructor overload for arguments ${key}`);
 };
 
 export const gcd = (...args: number[]) => {
@@ -47,4 +50,8 @@ export const boundSort = (arr: any[], template: any[], compareFn: (a: any, b: an
 
 export const styliseArray = (arr: any[], type: Style, { stylize }: InspectOptionsStylized) => (
   `[ ${`${arr.map((entry) => stylize(entry, type))}`.replace(/,/g, ', ')} ]`
+);
+
+export const roundToFixed = (value: number, places: number) => (
+  Math.round((value + Number.EPSILON) * 10 ** places) / (10 ** places)
 );
