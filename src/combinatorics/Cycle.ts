@@ -16,7 +16,7 @@ class Cycle extends FunctionProxy {
         if (typeof key === 'symbol') return Reflect.get(target, key);
         if (Number.isInteger(+key)) return new Ring(...entries)[+key];
         if (key === 'length') return this.order;
-        return target[key];
+        return Reflect.get(target, key);
       },
 
       apply: (_target, _thisArg, args) => (
