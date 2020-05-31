@@ -7,8 +7,8 @@ import {
 import { Cycle } from '.';
 
 class Permutation extends FunctionProxy {
-  public input: number[] = [];
-  public output: number[] = [];
+  readonly input: number[] = [];
+  readonly output: number[] = [];
   readonly cycles: Ring<Cycle>;
   readonly type: ArrayProxy<number>;
   readonly transpositions: Ring<Cycle>;
@@ -22,14 +22,14 @@ class Permutation extends FunctionProxy {
   constructor(cycles: Ring<Cycle>);
   constructor(cycles: Cycle);
 
-  constructor(...args: (number[] | Ring<Cycle> | Cycle)[]) {
+  constructor(...args: [number[], number[]] | [number[]] | [Ring<Cycle>] | [Cycle]) {
     super({
       apply: (_target, _thisArg, [input]) => (
         this.input.includes(input) ? this.output[this.input.indexOf(input)] : input
       ),
     });
 
-    overload(args, {
+    const properties = overload(args, {
       '(Array<Number>, Array<Number>)': (input: number[], output: number[]) => {
         if (!arrEquals([...input].sort((a, b) => a - b), [...output].sort((a, b) => a - b))) {
           throw Error('Permutations must map a set to itself');
@@ -38,31 +38,36 @@ class Permutation extends FunctionProxy {
           throw Error('Sets cannot contain duplicate elements');
         }
 
-        this.input = input;
-        this.output = output;
+        return { input, output };
       },
       '(Array<Number>)': (output: number[]) => {
         if (!arrEquals(output, [...new Set(output)])) {
           throw Error('Sets cannot contain duplicate elements');
         }
 
-        this.input = [...output].sort((a, b) => a - b);
-        this.output = output;
+        return { input: [...output].sort((a, b) => a - b), output };
       },
-      '(Ring<Cycle>)': (cycles: Ring<Cycle>) => {
-        const elements = Cycle.composeCycles(cycles);
-        elements.forEach((cycle) => [...cycle].forEach(((element) => {
-          this.input.push(element);
-          this.output.push(cycle(element));
-        })));
-      },
-      '(Cycle)': (cycle: Cycle) => {
-        [...cycle].forEach(((element) => {
-          this.input.push(element);
-          this.output.push(cycle(element));
-        }));
-      },
+      '(Ring<Cycle>)': (cycles: Ring<Cycle>) => (
+        Cycle.composeCycles(cycles).reduce<{ input: number[], output: number[]}>(
+          ({ input, output }, next) => ({
+            input: [...input, ...next],
+            output: [...output, ...[...next].map((element) => next(element))],
+          }),
+          { input: [], output: [] },
+        )
+      ),
+      '(Cycle)': (cycle: Cycle) => (
+        [...cycle]
+          .reduce(
+            ({ input, output }, next) => ({
+              input: [...input, next], output: [...output, cycle(next)],
+            }),
+            { input: [], output: [] },
+          )
+      ),
     });
+
+    Object.assign(this, properties);
 
     this.output = boundSort(this.output, this.input, (a, b) => a - b);
     this.input.sort((a, b) => a - b);
@@ -126,7 +131,5 @@ class Permutation extends FunctionProxy {
     return arrEquals(this.input, permutation.input) && arrEquals(this.output, permutation.output);
   }
 }
-
-// console.log(util.inspect);
 
 export default Permutation;

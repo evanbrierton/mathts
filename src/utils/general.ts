@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { InspectOptionsStylized, Style } from 'util';
 
-
 interface NestedArray<T> extends Array<T | NestedArray<T>> { }
 export type Constructor<T extends {} = {}> = new (...args: any[]) => T;
 
@@ -24,8 +23,9 @@ const getType = (value: any): string => (
 
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
   const key = `(${args.map((arg) => getType(arg)).join(', ')})`;
-  if (Object.keys(constructors).includes(key)) constructors[key](...args);
-  else throw TypeError(`The caller has no constructor overload for arguments ${key}`);
+  console.log(key);
+  if (Object.keys(constructors).includes(key)) return constructors[key](...args);
+  throw TypeError(`The caller has no constructor overload for arguments ${key}`);
 };
 
 export const gcd = (...args: number[]) => {
@@ -47,4 +47,12 @@ export const boundSort = (arr: any[], template: any[], compareFn: (a: any, b: an
 
 export const styliseArray = (arr: any[], type: Style, { stylize }: InspectOptionsStylized) => (
   `[ ${`${arr.map((entry) => stylize(entry, type))}`.replace(/,/g, ', ')} ]`
+);
+
+export const sum = (k: number, n: number, fn: (term: number) => number) => (
+  Array.from({ length: n + 1 - k }, (_term, i) => fn(i + k)).reduce((acc, next) => acc + next, 0)
+);
+
+export const product = (k: number, n: number, fn: (term: number) => number) => (
+  Array.from({ length: n + 1 - k }, (_term, i) => fn(i + k)).reduce((acc, next) => acc * next, 0)
 );
