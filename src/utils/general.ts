@@ -23,7 +23,6 @@ const getType = (value: any): string => (
 
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
   const key = `(${args.map((arg) => getType(arg)).join(', ')})`;
-  console.log(key);
   if (Object.keys(constructors).includes(key)) return constructors[key](...args);
   throw TypeError(`The caller has no constructor overload for arguments ${key}`);
 };
