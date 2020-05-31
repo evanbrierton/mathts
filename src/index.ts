@@ -9,4 +9,4 @@ export * from './utils';
 
 // const A = new Matrix(3, 3, (i, j) => i * j);
 
-console.log(Group.symmetricGroup(3).size);
+console.log(Group.dihedralGroup(3));
