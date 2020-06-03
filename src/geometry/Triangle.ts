@@ -33,7 +33,6 @@ class Triangle {
       (p: Point2D, q: Point2D) => p.subtract(bottomPoint).heading - q.subtract(bottomPoint).heading,
     ));
 
-    // Get side lengths. Circular shift by 1 so align with points.
     const sideLengths = sortedPoints.map(
       (p: Point2D, i: number) => p.distanceToPoint(sortedPoints[(i + 1) % 3]),
     );
