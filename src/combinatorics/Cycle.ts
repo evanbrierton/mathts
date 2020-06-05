@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import util, { InspectOptionsStylized } from 'util';
 
-import { Permutation } from '.';
+import Permutation from './Permutation';
 import {
   Ring, FunctionProxy, arrEquals, styliseArray,
 } from '../utils';

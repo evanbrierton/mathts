@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Permutation } from '.';
+import Permutation from './Permutation';
 import { Ring } from '../utils';
 
 class Group extends Set<Permutation> {
