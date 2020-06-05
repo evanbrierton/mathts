@@ -105,32 +105,36 @@ class Matrix extends Array {
 
   // Propertires
 
-  get upperTriangular() {
+  get isUpperTriangular() {
     return [...this].filter(({ i, j }) => j < i).every(({ entry }) => entry === 0);
   }
 
-  get lowerTriangular() {
+  get isLowerTriangular() {
     return [...this].filter(({ i, j }) => j > i).every(({ entry }) => entry === 0);
   }
 
-  get triangular() {
+  get isTriangular() {
     return this.lowerTriangular || this.upperTriangular;
   }
 
-  get diagonal() {
+  get isDiagonal() {
     return this.lowerTriangular && this.upperTriangular;
   }
 
-  get symmetric() {
+  get isSymmetric() {
     return this === this.transpose();
   }
 
-  get skewSymmetric() {
+  get isSkewSymmetric() {
     return this === this.transpose().scale(-1);
   }
 
-  get orthogonal() {
+  get isOrthogonal() {
     return this.transpose() === this.inverse();
+  }
+
+  get isSquare() {
+    return this.square;
   }
 
   // Array methods
