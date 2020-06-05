@@ -1,4 +1,4 @@
-import { ArrayProxy } from '.';
+import ArrayProxy from './ArrayProxy';
 
 class Ring<T> extends ArrayProxy<T> {
   constructor(...entries: T[]) {

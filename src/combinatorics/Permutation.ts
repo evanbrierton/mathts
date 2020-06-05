@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import util, { InspectOptions } from 'util';
 
+import Cycle from './Cycle';
 import {
   ArrayProxy, FunctionProxy, Ring, overload, lcm, arrEquals, boundSort,
 } from '../utils';
-import { Cycle } from '.';
 
 class Permutation extends FunctionProxy {
   readonly input: number[] = [];

@@ -21,8 +21,12 @@ const getType = (value: any): string => (
   )
 );
 
+export const getArgTypes = (args: any[]) => (
+  `(${args.map((arg) => getType(arg)).join(', ')})`
+);
+
 export const overload = (args: any[], constructors: {[index: string]: ((...args: any) => any)}) => {
-  const key = `(${args.map((arg) => getType(arg)).join(', ')})`;
+  const key = getArgTypes(args);
   if (Object.keys(constructors).includes(key)) return constructors[key](...args);
   throw TypeError(`The caller has no constructor overload for arguments ${key}`);
 };
@@ -55,3 +59,7 @@ export const sum = (k: number, n: number, fn: (term: number) => number) => (
 export const product = (k: number, n: number, fn: (term: number) => number) => (
   Array.from({ length: n + 1 - k }, (_term, i) => fn(i + k)).reduce((acc, next) => acc * next, 0)
 );
+
+export const conditionalChain = <T extends { [key: string]: any }>(
+  instance: T, condition: boolean, callback: (...args: any[]) => any, ...args: any[]
+): T => (condition ? instance[callback.name](...args) : instance);

@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as Matrix } from './Matrix';
+export { default as Vector } from './Vector';
