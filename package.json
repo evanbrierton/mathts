@@ -4,7 +4,7 @@
   "description": "A maths library written in TypeScript.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
     "start": "tsc --watch && nodemon -q ./dist/index.js",
     "build": "tsc"
   },
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/evanbrierton/mathts#readme",
   "devDependencies": {
+    "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.5",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
