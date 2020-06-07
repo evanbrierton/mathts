@@ -16,9 +16,9 @@ class Matrix extends Array {
   constructor(rows: number, columns: number, callback: (i: number, j: number) => number);
 
   constructor(...args: [number[][]] | [number, number, (i: number, j: number) => number]) {
-    const entries = args as number[];
+    const entries = <number[][]><unknown>args;
 
-    super(...entries.flat().map((row) => row.map((entry: number) => +entry.toFixed(2) || 0)));
+    super(...entries.flat().map((entry) => +entry.toFixed(2) || 0));
 
     const matrix = overload(args, {
       '(Array<Array<Number>>)': (rows: number[][]) => {
