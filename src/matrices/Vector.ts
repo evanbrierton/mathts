@@ -19,7 +19,7 @@ class Vector extends Matrix {
 
   dotProduct(vector: Vector) {
     return [...this]
-      .reduce((acc, _next, i) => acc + [...this].flat()[i] * [...vector].flat()[i], 0);
+      .reduce((acc, _next, i) => acc + this.toArray().flat()[i] * vector.toArray().flat()[i], 0);
   }
 
   angleBetween(vector: Vector) {
@@ -32,8 +32,8 @@ class Vector extends Matrix {
     ) {
       throw Error('Cross product can only be computed in 3 dimensions');
     }
-    const a = [...this].flat();
-    const b = [...this].flat();
+    const a = this.toArray().flat();
+    const b = this.toArray().flat();
 
     if (this.length === 2) return new Vector([[0], [0], [a[0] * b[1] - a[1] * b[0]]]);
 

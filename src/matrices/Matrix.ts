@@ -16,9 +16,9 @@ class Matrix extends Array {
   constructor(rows: number, columns: number, callback: (i: number, j: number) => number);
 
   constructor(...args: [number[][]] | [number, number, (i: number, j: number) => number]) {
-    const entries = args as number[];
+    const entries = <number[][]><unknown>args;
 
-    super(...entries.flat().map((row) => row.map((entry: number) => +entry.toFixed(2) || 0)));
+    super(...entries.flat().map((entry) => +entry.toFixed(2) || 0));
 
     const matrix = overload(args, {
       '(Array<Array<Number>>)': (rows: number[][]) => {
@@ -105,32 +105,36 @@ class Matrix extends Array {
 
   // Propertires
 
-  get upperTriangular() {
+  get isUpperTriangular() {
     return [...this].filter(({ i, j }) => j < i).every(({ entry }) => entry === 0);
   }
 
-  get lowerTriangular() {
+  get isLowerTriangular() {
     return [...this].filter(({ i, j }) => j > i).every(({ entry }) => entry === 0);
   }
 
-  get triangular() {
+  get isTriangular() {
     return this.lowerTriangular || this.upperTriangular;
   }
 
-  get diagonal() {
+  get isDiagonal() {
     return this.lowerTriangular && this.upperTriangular;
   }
 
-  get symmetric() {
+  get isSymmetric() {
     return this === this.transpose();
   }
 
-  get skewSymmetric() {
+  get isSkewSymmetric() {
     return this === this.transpose().scale(-1);
   }
 
-  get orthogonal() {
+  get isOrthogonal() {
     return this.transpose() === this.inverse();
+  }
+
+  get isSquare() {
+    return this.square;
   }
 
   // Array methods
